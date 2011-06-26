@@ -1,0 +1,3 @@
+#!/bin/sh
+
+java -jar <%= @node[:jmxtrans][:base_dir] -%>/jmxtrans-all.jar -j <%= @node[:jmxtrans][:config_dir] %> <%= ">>" -%> /var/log/jmxtrans.log <%= "2>&1" -%>

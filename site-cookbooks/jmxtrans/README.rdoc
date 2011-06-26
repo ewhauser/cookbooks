@@ -1,0 +1,43 @@
+= DESCRIPTION:
+
+Configure and install jmxtrans.
+
+= REQUIREMENTS:
+
+This template was abstracted from a recipe with a lot of environment specific configuration (installing jmxtrans for an RPM, etc).  It will require some modifications to become a working cookbook.
+
+= ATTRIBUTES:
+
+* jmxtrans.basedir - Base folder for jmxtrans.
+* jmxtrans.config_dir - Base folder for jmxtrans configuration files.
+
+= USAGE:
+
+This cookbook is based off of the collectd cookbook.  Defining a new JMX query is done like:
+
+```ruby
+include_recipe "jmxtrans"
+
+jmxtrans_query "heap" do
+  options :obj => "java.lang:type=Memory", :attrs => [ "HeapMemoryUsage", "NonHeapMemoryUsage" ], jmx_port => "9902"
+end
+```
+
+The default jmxtrans_query definition is currently hard coded to use a jmxtrans configuration that writes data to carbon.  It will search for a server with the graphite role in order to write output.
+
+= LICENSE & AUTHOR:
+
+Author:: Eric Hauser (<ewhauser@gmail.com>
+Copyright:: 2011, Eric Hauser
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

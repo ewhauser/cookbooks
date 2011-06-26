@@ -1,0 +1,17 @@
+{
+  "servers" : [ {
+    "port" : "<%= @jmx_port -%>",
+    "host" : "<%= node[:fqdn] -%>",
+    "queries" : [ {
+      "obj" : "java.lang:type=Memory",
+      "attr" : [ "HeapMemoryUsage", "NonHeapMemoryUsage" ],
+      "outputWriters" : [ {
+        "@class" : "com.googlecode.jmxtrans.model.output.GraphiteWriter",
+        "settings" : {
+          "port" : 2003,
+          "host" : "<%= @graphite_ip -%>"
+        }
+      } ]
+    } ]
+  } ]
+}
