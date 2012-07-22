@@ -26,20 +26,29 @@ remote_file "/tmp/jmxtrans-#{node[:jmxtrans][:version]}.zip" do
   source "http://jmxtrans.googlecode.com/files/jmxtrans-#{node[:jmxtrans][:version]}.zip"
   checksum node[:jmxtrans][:checksum]
   mode "0644"
+  not_if { File.exists? "/tmp/jmxtrans-#{node[:jmxtrans][:version]}.zip" }
 end
 
-bash "unzip jmxtrans" 
+bash "unzip jmxtrans" do
   user "root"
   cwd "/tmp"
   code %(unzip /tmp/jmxtrans-#{node[:jmxtrans][:version]}.zip)
   not_if { File.exists? "/tmp/jmxtrans-#{node[:jmxtrans][:version]}" }
 end
 
+directory "/usr/local/jmxtrans-#{node[:jmxtrans][:version]}" do
+  owner "root"
+  group "root"
+  mode "0755"
+  action :create
+  not_if { File.exists? "/usr/local/jmxtrans-#{node[:jmxtrans][:version]}" }
+end
+
 bash "copy jmxtrans root" do
   user "root"
   cwd "/tmp"
   code %(cp -r /tmp/jmxtrans-#{node[:jmxtrans][:version]}/* /usr/local/jmxtrans-#{node[:jmxtrans][:version]})
-  not_if { File.exists? "/usr/local/jmxtrans-#{node[:jmxtrans][:version]}" }
+  not_if { File.exists? "/usr/local/jmxtrans-#{node[:jmxtrans][:version]}/jmxtrans.jar" }
 end
 
 directory "#{node[:jmxtrans][:config_dir]}" do
@@ -59,8 +68,10 @@ cron "jmxtrans" do
   command "/bin/jmxtrans"
 end
 
-link "#{node[:jmxtrans][:basedir]}" do
+link "#{node[:jmxtrans][:base_dir]}" do
   to "/usr/local/jmxtrans-#{node[:jmxtrans][:version]}"
+  owner "root"
+  group "root"
 end
 
 logrotate_app "jmxtrans" do
