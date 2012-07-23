@@ -18,7 +18,7 @@
 #
 define :jmxtrans_query, :options => {}, :template => nil, :cookbook => nil do
   nodes = []
-  search(:node, "run_list:role\\[graphite\\] AND chef_environment:#{node[:chef_environment}") do |sn|
+  search(:node, "run_list:role\\[graphite\\] AND chef_environment:#{node[:chef_environment]}") do |sn|
     nodes << "#{sn.fqdn}"
   end
 
